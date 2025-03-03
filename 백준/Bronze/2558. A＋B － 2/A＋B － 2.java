@@ -1,8 +1,10 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         int n1 = InputView.readInt();
         int n2 = InputView.readInt();
         OutputView.print(String.valueOf(n1+n2));
@@ -10,21 +12,22 @@ public class Main {
 }
 
 class InputView {
-    private static final Scanner scanner = new Scanner(System.in);
+    private static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
     // 1. 정수 한 개를 입력받아 반환
-    public static int readInt() {
-        return scanner.nextInt();
+    public static int readInt() throws IOException {
+        return Integer.parseInt(br.readLine().trim());
     }
 
     // 2. K개의 정수를 입력받아 배열로 반환
-    public static int[] readIntArray() {
-        String[] input = scanner.nextLine().trim().split(" ");
-        return Arrays.stream(input).mapToInt(Integer::parseInt).toArray();
+    public static int[] readIntArray() throws IOException {
+        return Arrays.stream(br.readLine().trim().split(" "))
+                     .mapToInt(Integer::parseInt)
+                     .toArray();
     }
 
     // 3. N x M개의 정수를 입력받아 2차원 배열로 반환
-    public static int[][] readIntMatrix(int n, int m) {
+    public static int[][] readIntMatrix(int n, int m) throws IOException {
         int[][] matrix = new int[n][m];
         for (int i = 0; i < n; i++) {
             matrix[i] = readIntArray();
@@ -33,15 +36,15 @@ class InputView {
     }
 
     // 4. char 형태의 입력 메서드
-    public static char readChar() {
-        return scanner.next().charAt(0);
+    public static char readChar() throws IOException {
+        return br.readLine().trim().charAt(0);
     }
 
-    public static char[] readCharArray() {
-        return scanner.nextLine().trim().toCharArray();
+    public static char[] readCharArray() throws IOException {
+        return br.readLine().trim().toCharArray();
     }
 
-    public static char[][] readCharMatrix(int n, int m) {
+    public static char[][] readCharMatrix(int n, int m) throws IOException {
         char[][] matrix = new char[n][m];
         for (int i = 0; i < n; i++) {
             matrix[i] = readCharArray();
@@ -50,12 +53,12 @@ class InputView {
     }
 
     // 5. String 형태의 입력 메서드
-    public static String readString() {
-        return scanner.nextLine().trim();
+    public static String readString() throws IOException {
+        return br.readLine().trim();
     }
 
-    public static String[] readStringArray() {
-        return scanner.nextLine().trim().split(" ");
+    public static String[] readStringArray() throws IOException {
+        return br.readLine().trim().split(" ");
     }
 }
 
