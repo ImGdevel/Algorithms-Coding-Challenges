@@ -1,76 +1,43 @@
 import java.util.*;
 
 class Solution {
-    
-    static class Edge {
-        int to, weight;
+    public int solution(int n, int start, int a, int b, int[][] fares) {
+        int[][] dist = new int[n][n];
 
-        Edge(int to, int weight) {
-            this.to = to;
-            this.weight = weight;
+        // 초기화: 자기 자신으로의 거리는 0, 나머지는 무한대
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(dist[i], Integer.MAX_VALUE);
+            dist[i][i] = 0;
         }
-    }
 
-    public static int[] dijkstra(List<Edge>[] graph, int start) {
-        int n = graph.length;
-        int[] dist = new int[n];
-        Arrays.fill(dist, Integer.MAX_VALUE);
-        dist[start] = 0;
+        // 간선 정보 초기화
+        for (int[] fare : fares) {
+            int u = fare[0] - 1;
+            int v = fare[1] - 1;
+            int w = fare[2];
+            dist[u][v] = w;
+            dist[v][u] = w;
+        }
 
-        PriorityQueue<Edge> pq = new PriorityQueue<>(Comparator.comparingInt(e -> e.weight));
-        pq.add(new Edge(start, 0));
-
-        while (!pq.isEmpty()) {
-            Edge current = pq.poll();
-            int u = current.to;
-
-            if (current.weight > dist[u]) continue;
-
-            for (Edge edge : graph[u]) {
-                int v = edge.to;
-                int newDist = dist[u] + edge.weight;
-
-                if (newDist < dist[v]) {
-                    dist[v] = newDist;
-                    pq.add(new Edge(v, newDist));
+        // 플로이드 워셜 알고리즘
+        for (int k = 0; k < n; k++) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (dist[i][k] != Integer.MAX_VALUE && dist[k][j] != Integer.MAX_VALUE) {
+                        dist[i][j] = Math.min(dist[i][j], dist[i][k] + dist[k][j]);
+                    }
                 }
             }
         }
-        return dist;
-    }
-    
-    
-    public int solution(int n, int start, int a, int b, int[][] fares) {
-        int answer = 0;
-        
-        List<Edge>[] graph = new List[n];
-        for(int i =0; i < n; i++){
-            graph[i] = new ArrayList<>();
-        }
-        
-        
-        for(int[] f : fares){
-            int s = f[0] - 1;
-            int e = f[1] - 1;
-            int w = f[2];
-            
-            graph[s].add(new Edge(e, w));
-            graph[e].add(new Edge(s, w));
-        }
-        
-        int[][] dist = new int[n][];
-        
-        for(int i=0; i<n; i++){
-            dist[i] = dijkstra(graph, i);
-        }
-        
-        answer = Integer.MAX_VALUE;
 
-        for(int i=0; i<n; i++){
-
-            answer = Math.min(answer ,dist[start-1][i] + dist[i][a-1] + dist[i][b-1]);
+        // 최적의 합승 지점 찾기
+        int answer = Integer.MAX_VALUE;
+        for (int i = 0; i < n; i++) {
+            if (dist[start-1][i] != Integer.MAX_VALUE && dist[i][a-1] != Integer.MAX_VALUE && dist[i][b-1] != Integer.MAX_VALUE) {
+                answer = Math.min(answer, dist[start-1][i] + dist[i][a-1] + dist[i][b-1]);
+            }
         }
-        
+
         return answer;
     }
 }
