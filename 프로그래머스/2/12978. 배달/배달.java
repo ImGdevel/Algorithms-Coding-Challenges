@@ -2,69 +2,59 @@ import java.util.*;
 
 class Solution {
     
-    class Edge{
-        int to;
-        int weight;
+    public int[] dickstra(List<int[]>[] graph, int N, int start){
         
-        public Edge(int t, int w){
-            to = t;
-            weight = w;
-        }
-    }
-    
-    public int[] dijkstra(List<Edge>[] map, int N, int start){
+        Queue<Integer> pq = new PriorityQueue<>();
         int[] dist = new int[N];
-        Arrays.fill(dist,Integer.MAX_VALUE);
+        Arrays.fill(dist, 1000000000);
+        
+        pq.offer(start);
         dist[start] = 0;
         
-        Queue<Edge> pq = new PriorityQueue<>((a,b)->a.weight - b.weight);
-        pq.offer(new Edge(start, 0));
-        
-        
         while(!pq.isEmpty()){
-            Edge current = pq.poll();
-            int u = current.to;
+            int u = pq.poll();    
+            int value = dist[u];
             
-            // 현재 노드에서 다음 노드로 
-            for (Edge edge : map[u]) {
-                int v = edge.to;
-                int newDist = dist[u] + edge.weight;
+            for(int[] next : graph[u]){
+                int v = next[0];
+                int w = value + next[1];
                 
-                if(newDist < dist[v]){
-                    dist[v] = newDist;
-                    pq.offer(new Edge(v, newDist));
+                if(dist[v] > w){
+                    dist[v] = w;
+                    pq.offer(v);
                 }
-            }
+            }   
         }
         
         return dist;
     }
     
+    
+    
     public int solution(int N, int[][] road, int K) {
         int answer = 0;
-        
-        List<Edge>[] map = new List[N];
+        List<int[]>[] graph = new List[N];
         for(int i=0; i<N; i++){
-            map[i] = new ArrayList<>();
+            graph[i] = new ArrayList<>();
         }
         
         
-        for(int[] r: road){
-            int s = r[0]-1;
-            int e = r[1]-1;
-            int w = r[2];
-            map[s].add(new Edge(e,w));
-            map[e].add(new Edge(s,w));
+        
+        for(int[] n : road){
+            int s = n[0] - 1;
+            int e = n[1] - 1;
+            int w = n[2];
+            graph[s].add(new int[]{e,w});
+            graph[e].add(new int[]{s,w});
         }
         
-        int[] list = dijkstra(map, N, 0);
-
-        for(int n : list){
+        int[] dist = dickstra(graph, N, 0);
+        for(int n : dist){
             if(n <= K){
                 answer++;
             }
         }
-        
+
         return answer;
     }
 }
