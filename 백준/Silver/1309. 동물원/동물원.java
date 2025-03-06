@@ -16,13 +16,11 @@ class Solution {
         int[] dp = new int[2];
         int MOD = 9901;
         dp[0] = 1; dp[1] = 1;
-        for(int i=1; i<N; i++){
-            int[] temp = new int[2];
-            temp[0] = (dp[0] + dp[1]) % MOD;
-            temp[1] = (dp[0] * 2) + dp[1] % MOD;
-            dp[0] = temp[0];
-            dp[1] = temp[1];
-
+        for(int i=1, temp1, temp2; i<N; i++){
+            temp1 = (dp[0] + dp[1]) % MOD;
+            temp2 = (dp[0] * 2) + dp[1] % MOD;
+            dp[0] = temp1;
+            dp[1] = temp2;
         }
 
         return ((dp[0] * 2 + dp[1]) % MOD);
